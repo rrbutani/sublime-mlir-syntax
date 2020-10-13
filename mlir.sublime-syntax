@@ -1,0 +1,75 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+#
+# Essentially a port of: github.com/mlir-visualizer/mlir-grammar/blob/master/sample.mlir
+name: MLIR
+file_extensions:
+  - mlir
+scope: source.mlir
+
+contexts:
+  attribute:
+    - match: \W[\w_][\w\d_.$]*\s*=
+      scope: meta.attribute.mlir
+
+  branch_target:
+    - match: \^bb[\w\d_$.-]+
+      scope: entity.name.label.mlir
+
+  comment:
+    - match: //.*$
+      scope: comment.line.double-slash.mlir
+
+  identifier:
+    - match: ([\%#@][\w_][\w\d.$]*)
+      captures:
+        0: variable.parameter
+      scope: meta.identifier.mlir
+
+  numbers:
+    - match: (?<=\W|e|E)(-)?([0-9]+)(((x|-)[0-9]+)*|.[0-9]+)(?=\W|e|E)
+      scope: constant.numeric.mlir
+
+  string:
+    - match: (\")
+      captures:
+        0: punctuation.definition.string.begin.mlir
+      push:
+        - meta_scope: string.quoted.double.mlir
+        - match: (\")
+          captures:
+            0: punctuation.definition.string.end.mlir
+          pop: true
+        - include: string-escapes
+        - include: string-illegal
+  string-escapes:
+    - match: \\[nt"]
+      scope: constant.character.escape.mlir
+  string-illegal:
+    - match: \\.
+      scope: invalid.illegal.mlir
+
+  types:
+    - match: \b(index|i[1-9][0-9]*|f16|bf16|f32|f64|u8|ui32|si32|memref|tensor|vector)\b
+      captures:
+        1: storage.type.mlir
+      scope: meta.types.simple.mlir
+
+  main:
+    - match: \b(func)\b\s* (@[\w_][\w\d_.$]*)
+      captures:
+        1: keyword.function.mlir
+        2: entity.name.function.mlir
+      scope: support.function.mlir
+    - match: \b(attributes|br|call|constant|loc|return)\b
+      scope: keyword.module.mlir
+
+    - include: attribute
+    - include: branch_target
+    - include: identifier
+    - include: numbers
+    - include: types
+
+    - include: comment
+    - include: string
