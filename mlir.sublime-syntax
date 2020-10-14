@@ -295,38 +295,26 @@ contexts:
 
 
   CHECK:
-    - match: (\/\/)\s*(CHECK\s*:|CHECK-\\w+\s*:)
+    - match: (\/\/)\s*(CHECK\s*:|CHECK-\w+\s*:)
       captures:
         1: comment.line.double-slash.mlir
         2: comment.other.CHECK.mlir
       push:
-        - meta_scope: comment.line.double-slash.CHECK-CODE
-        - match: (.*)$
-          captures:
-            0: comment.other.CHECK.mlir
-          pop: true
+        - meta_scope: comment.line.double-slash.mlir
         - include: CHECK-CODE
+        - include: CHECK-CODE-ENDLINE
   CHECK-CODE:
     - match: ([^0-9a-zA-Z%\"@]*)?
       captures:
         1: comment.line.double-slash.mlir
-      push:
-        - meta_scope: comment.line.double-slash.CHECK-CODE-INNER
-        - include: CHECK-CODE-INNER
-        # - include: CHECK-CODE
-          pop: true
-  CHECK-CODE-INNER:
     - match: (\b|x)(index|i[1-9][0-9]*|f16|bf16|f32|f64|u8|memref|tensor|vector|func)\b
       captures:
         1: comment.line.double-slash.mlir
         2: storage.type.mlir
-    - match: \b([0-9]+)(x.*)?
-      captures:
-        1: constant.numeric.mlir
-        2: CHECK-CODE-INNER
-    - match: (.*)
-      scope: comment.line.double-slash.mlir
-    # - include: CHECK-CODE-INNER
+    - include: $self # I'm pretty sure this doesn't actually work (TODO).
+  CHECK-CODE-ENDLINE:
+    - match: $
+      pop: true
 
   main:
     - match: \b(func)\b\s* (@[\w_][\w\d_.$]*)
