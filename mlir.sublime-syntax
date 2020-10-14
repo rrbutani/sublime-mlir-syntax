@@ -56,6 +56,278 @@ contexts:
         1: storage.type.mlir
       scope: meta.types.simple.mlir
 
+  memref-size:
+    - match: (?<=<)\s*(((\?|[1-9][0-9]*)\s*x\s*)*)(i[1-9][0-9]*|f16|bf16|f32|f64|u8|ui32|si32|!quant\.uniform|vector|tensor|memref|!)\b
+      captures:
+        0: storage.type.mlir.size
+        1: constant.numeric.size.mlir
+      scope: meta.type.mlir.size
+
+
+  affineOps:
+    - match: \baffine\.(for|apply|if|load|store|dma_start|dma_wait|min|max|parallel|prefetch)\b
+      scope: entity.name.function.mlir.affineOps
+
+  affineOpsP:
+    - match: (?<=\W)\"affine\.(for|apply|if|load|store|dma_start|dma_wait|min|max|parallel|prefetch)\"(?=\W)
+      scope: entity.name.function.mlir.affineOpsP
+
+  affineStructures:
+    - match: \baffine_(map|set)\b
+      scope: entity.name.function.mlir.affineStructures
+
+
+  llvmType:
+    - match: (^!llvm|\s!llvm)[\.<]
+      captures:
+        1: variable.mlir
+      scope: meta.types.llvm.mlir
+
+  llvmFunc:
+    - match: \bllvm\.(?=func)
+      scope: keyword.function.llvm
+
+  llvmReturn:
+    - match: \bllvm\.return\b
+      scope: keyword.return.llvm
+
+  llvmIntArith:
+    - match: \bllvm\.(add|sub|mul|udiv|sdiv|urem|srem)\b
+      scope: entity.name.function.mlir.llvmIntArith
+
+  llvmFloatArith:
+    - match: \bllvm\.(fadd|fsub|fmul|fdiv|frem)\b
+      scope: entity.name.function.mlir.llvmFloatArith
+
+  llvmMemOp:
+    - match: \bllvm\.(alloca|getelementptr|load|store)\b
+      scope: entity.name.function.mlir.llvmMemOp
+
+  llvmAggregateOp:
+    - match: \bllvm\.(extractvalue|insertvalue)\b
+      scope: entity.name.function.mlir.llvmAggregateOp
+
+  llvmTerminatorOp:
+    - match: \bllvm\.(br|cond_br|call)\b
+      scope: entity.name.function.mlir.llvmTerminatorOp
+
+  llvmComparison:
+    - match: \bllvm\.(eq|ne|slt|sle|sgt|sge|ult|ule|ugt|uge|bitcast|select|icmp)\b
+      scope: entity.name.function.mlir.llvmComparison
+
+  llvmOps:
+    - match: \bllvm\.(extractelement|insertelement|shufflevector)\b
+      scope: entity.name.function.mlir.llvmOps
+
+  llvmMLIR:
+    - match: \b(llvm\.mlir\.)((addressof|constant|global|null|undef))
+      captures:
+        1: keyword.other.llvm
+        2: entity.name.function.mlir.auxiliary
+      scope: meta.llvm.mlirAuxiliary
+
+
+  gpuFunc:
+    - match: \bgpu\.(?=func)
+      scope: keyword.function.mlir.gpu
+
+  gpuReturn:
+    - match: \bgpu\.return\b
+      scope: keyword.return.mlir.gpu
+
+  gpuModules:
+    - match: \bgpu\.(module|container_module|kernel_module)\b
+      scope: keyword.other.mlir.gpu-modules
+
+  gpuKernel:
+    - match: \bgpu\.kernel\b
+      scope: keyword.other.mlir.gpu-kernel
+
+  gpuOpsP:
+    - match: (?<=\W)\"gpu\.(launch_func|thread_id|block_dim|block_id|grid_dim|all_reduce|yield|shuffle|barrier)\"(?=\W)
+      scope: entity.name.function.mlir.gpuOpsP
+
+  gpuOps:
+    - match: \bgpu\.(launch_func|thread_id|block_dim|block_id|grid_dim|all_reduce|yield|shuffle|barrier)\b
+      scope: entity.name.function.mlir.gpuOpsP
+
+  gpuLaunchAndTerminator:
+    - match: \bgpu\.(launch|terminator)\b
+      scope: keyword.other.mlir.gpu-launchAndTerminator
+
+  gpuTestPromoteWorkgroup:
+    - match: \bgpu\.test_promote_workgroup\b
+      scope: keyword.other.mlir.gpu-testPromoteWorkgroup
+
+
+  nvvmID:
+    - match: \bnvvm\.read\.ptx\.sreg\.(tid|ntid|ctaid|nctaid)\.(x|y|z)\b
+      scope: entity.name.function.mlir.nvvm-id
+
+  nvvmLaneId:
+    - match: \bnvvm\.read\.ptx\.sreg\.laneid\b
+      scope: entity.name.function.mlir.nvvm-laneid
+
+  nvvmBarrier0:
+    - match: \bnvvm\.barrier0\b
+      scope: entity.name.functionmlir.nvvm-barrier0
+
+  nvvmMma:
+    - match: \bnvvm\.mma\.sync\b
+      scope: entity.name.function.mir.nvvm-mma
+
+  nvvmShflBfly:
+    - match: \bnvvm\.shfl\.sync\.bfly\b
+      scope: entity.name.function.mlir.nvvm-shflbfly
+
+  nvvmVoteBallot:
+    - match: \bnvvm\.vote\.ballot\.sync\b
+      scope: entity.name.function.mlir.nvvm-vteballot
+
+  nvvmWarpSize:
+    - match: \bnvvm\.read\.ptx\.sreg\.warpsize\b
+      scope: entity.name.function.mlir.warpsize
+
+
+  tflMath:
+    - match: (?<=\W)\"tfl\.(abs|add_n|add|cos|div|exp|floor_div|floor_mod|floor|log|log_softmax|mul|pow|round|rsqrt|sin|softmax|sqrt|square|squared_difference|sub|sum|tanh)\"(?=\W)
+      scope: entity.name.function.mlir.tfl_math
+
+  tflLogic:
+    - match: (?<=\W)\"tfl\.(equal|greater_equal|greater|less_equal|less|logical_and|logical_not|logical_or|neg|not_equal|select|select_v2|where)\"(?=\W)
+      scope: entity.name.function.mlir.tflLogic
+
+  tflStats:
+    - match: (?<=\W)\"tfl\.(arg_max|arg_min|average_pool_2d|max_pool_2d|max_pooling_with_argmax_2d|max_unpooling_2d|maximum|mean|minimum|non_max_suppression_(v4|v5))\"(?=\W)
+      scope: entity.name.function.mlir.tflStats
+
+  tflConv:
+    - match: (?<=\W)\"tfl\.(conv_2d|convolution_2d_transpose_bias|depthwise_conv_2d|transpose_conv)\"(?=\W)
+      scope: entity.name.function.mlir.tflConv
+
+  tflLSTM:
+    - match: (?<=\W)\"tfl\.(basic_lstm|lstm|unidirectional_sequence_lstm)\"(?=\W)
+      scope: entity.name.function.mlir.tflLSTM
+
+  tflPseudo:
+    - match: (?<=\W)\"tfl\.(pseudo_const|pseudo_qconst|pseudo_sparse_const|pseudo_sparse_qconst)\"(?=\W)
+      scope: entity.name.function.mlir.tflPseudo
+
+  tflTransformations:
+    - match: (?<=\W)\"tfl\.(batch_to_space_nd|depth_to_space|expand_dims|resize_bilinear|resize_nearest_neighbor|space_to_batch_nd|space_to_depth|sparse_to_dense)\"(?=\W)
+      scope: entity.name.function.mlir.tflReshaping
+
+  tflRELU:
+    - match: (?<=\W)\"tfl\.(elu|leaky_relu|prelu|relu_n1_to_1|relu6|relu)\"(?=\W)
+      scope: entity.name.function.mlir.tflRELU
+
+  tflMatrix:
+    - match: (?<=\W)\"tfl\.(matrix_diag|matrix_set_diag|mirror_pad|pad|padv2|rank|transpose)\"(?=\W)
+      scope: entity.name.function.mlir.tflMatrix
+
+  tflOps:
+    - match: (?<=\W)\"tfl\.(cast|ceil|concatenation|densify|dequantize|fill|gather_nd|gather|logistic|pack|quantize|range|reshape|svdf|shape|slice|split|split_v|squeeze|tile|unique|unpack|while|yield)\"(?=\W)
+      scope: entity.name.function.mlir.tflOps
+
+  tflLongOps:
+    - match: (?<=\W)\"tfl\.(embedding_lookup|external_const|fake_quant|fully_connected|hard_swish|NumericVerify|one_hot|segment_sum|strided_slice|topk_v2|zeros_like)\"(<=\W)
+      scope: entity.name.function.mlir.tflLongOps
+
+  tflNormalization:
+    - match: (?<=\W)\"tfl\.(l2_normalization|local_response_normalization)\"(?=\W)
+      scope: entity.name.function.mlir.tflNormalization
+
+  tflReduce:
+    - match: (?<=\W)\"tfl\.(reduce_any|reduce_max|reduce_min|reduce_prod)\"(?=\W)
+      scope: entity.name.function.mlir.tflReduce
+
+  tflSequence:
+    - match: (?<=\W)\"tfl\.(reverse_sequence|reverse_v2|unidirectional_sequence_rnn)\"(?=\W)
+      scope: entity.name.function.mlir.tflSequence
+
+
+  vectorOps:
+    - match: \Wvector\.(broadcast|contract|vectorfma|print|constant_mask|create_mask|shuffle|matrix_multiply|outerproduct|reduction|strided_slice|transpose|type_cast)\b
+      scope: entity.name.function.mlir.vectorOps
+
+  vectorExtract:
+    - match: \Wvector\.(extract|extractelement|extract_slices)\b
+      scope: entity.name.function.mlir.vectorExtract
+
+  vectorInsert:
+    - match: \Wvector\.(insert|insertelement|insert_slices|insert_strided_slice)\b
+      scope: entity.name.function.mlir.vectorInsert
+
+  vectorReshape:
+    - match: \Wvector\.(reshape|shape_cast)\b
+      scope: entity.name.function.mlir.vectorReshape
+
+  vectorTransfer:
+    - match: \Wvector\.transfer_(read|write)\b
+      scope: entity.name.function.mlir.vectorTransfer
+
+  vectorTuple:
+    - match: \Wvector\.(tuple|tuple_get)\b
+      scope: entity.name.function.mlir.vectorTuple
+
+
+  loopOps:
+    - match: \bloop\.(for|if|parallel|reduce|yield)\b
+      scope: entity.name.function.mlir.loopOps
+
+
+  tileFunctions:
+    - match: \btile\.(constant|contract|index|reshape)\b
+      scope: entity.name.function.mlir.tileFunctions
+
+  tileQuotedFunctions:
+    - match: (?<=\W)\"tile\.(constant|contract|index|reshape)\"(?=\W)
+      scope: entity.name.function.mlir.tileFunctions
+
+  tileKeywords:
+    - match: \btile\.(name)\b
+      scope: keyword.other.mlir.tileKeywords
+
+
+  eltwiseFunctions:
+    - match: (?<=\W)\"eltwise\.(add|div|sconst|cmp_lt|select|sub|exp|cast|neg|mul|sqrt|ident)\"(?=\W)
+      scope: entity.name.function.mlir.tileFunctions
+
+
+  CHECK:
+    - match: (\/\/)\s*(CHECK\s*:|CHECK-\\w+\s*:)
+      captures:
+        1: comment.line.double-slash.mlir
+        2: comment.other.CHECK.mlir
+      push:
+        - meta_scope: comment.line.double-slash.CHECK-CODE
+        - match: (.*)$
+          captures:
+            0: comment.other.CHECK.mlir
+          pop: true
+        - include: CHECK-CODE
+  CHECK-CODE:
+    - match: ([^0-9a-zA-Z%\"@]*)?
+      captures:
+        1: comment.line.double-slash.mlir
+      push:
+        - meta_scope: comment.line.double-slash.CHECK-CODE-INNER
+        - include: CHECK-CODE-INNER
+        # - include: CHECK-CODE
+          pop: true
+  CHECK-CODE-INNER:
+    - match: (\b|x)(index|i[1-9][0-9]*|f16|bf16|f32|f64|u8|memref|tensor|vector|func)\b
+      captures:
+        1: comment.line.double-slash.mlir
+        2: storage.type.mlir
+    - match: \b([0-9]+)(x.*)?
+      captures:
+        1: constant.numeric.mlir
+        2: CHECK-CODE-INNER
+    - match: (.*)
+      scope: comment.line.double-slash.mlir
+    # - include: CHECK-CODE-INNER
+
   main:
     - match: \b(func)\b\s* (@[\w_][\w\d_.$]*)
       captures:
@@ -70,6 +342,72 @@ contexts:
     - include: identifier
     - include: numbers
     - include: types
+    - include: memref-size
+
+    - include: affineOps
+    - include: affineOpsP
+    - include: affineStructures
+
+    - include: llvmType
+    - include: llvmFunc
+    - include: llvmReturn
+    - include: llvmIntArith
+    - include: llvmFloatArith
+    - include: llvmMemOp
+    - include: llvmAggregateOp
+    - include: llvmTerminatorOp
+    - include: llvmComparison
+    - include: llvmOps
+    - include: llvmMLIR
+
+    - include: gpuFunc
+    - include: gpuReturn
+    - include: gpuModules
+    - include: gpuKernel
+    - include: gpuOpsP
+    - include: gpuOps
+    - include: gpuLaunchAndTerminator
+    - include: gpuTestPromoteWorkgroup
+
+    - include: nvvmID
+    - include: nvvmLaneId
+    - include: nvvmBarrier0
+    - include: nvvmMma
+    - include: nvvmShflBfly
+    - include: nvvmVoteBallot
+    - include: nvvmWarpSize
+
+    - include: tflMath
+    - include: tflLogic
+    - include: tflStats
+    - include: tflConv
+    - include: tflLSTM
+    - include: tflPseudo
+    - include: tflTransformations
+    - include: tflRELU
+    - include: tflMatrix
+    - include: tflOps
+    - include: tflLongOps
+    - include: tflNormalization
+    - include: tflReduce
+    - include: tflSequence
+
+    - include: vectorOps
+    - include: vectorExtract
+    - include: vectorInsert
+    - include: vectorReshape
+    - include: vectorTransfer
+    - include: vectorTuple
+
+    - include: loopOps
+
+    - include: tileFunctions
+    - include: tileQuotedFunctions
+    - include: tileKeywords
+
+    - include: eltwiseFunctions
+
+    - include: CHECK
 
     - include: comment
     - include: string
