@@ -10,7 +10,7 @@ scope: source.mlir
 
 contexts:
   attribute:
-    - match: \W[\w_][\w\d_.$]*\s*=
+    - match: ([^\w\"])[\w_][\w\d_.$]*\s*=
       scope: meta.attribute.mlir
 
   branch_target:
